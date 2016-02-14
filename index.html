@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1,user-scalable=no"/>
+    <title>Whale Hunting in the Faroe Islands</title>
+    <link rel="stylesheet" href="//js.arcgis.com/3.15/esri/css/esri.css">
+    <link href="//fonts.googleapis.com/css?family=Muli" rel="stylesheet" type="text/css">
+    <style>
+      html, body, #map {
+        height: 100%;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        background-color: #FFF;
+        overflow: hidden;
+        font-family: "Muli", sans-serif;
+      }
+      .map-controls {
+        position:absolute;
+        top:20px;
+        right:20px;
+        border-radius:2px;
+        padding:5px;
+        min-width:280px;
+        background-color:rgba(170, 170, 170, 0.7);
+        display:none;
+      }
+      @media screen and (max-width: 42em) {
+        .esriSimpleSlider {
+          display: none;
+        }
+        .map-controls {
+          right: 10px;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="map"></div>
+    
+    <div id="controls" class="map-controls">
+      <!-- <h3>Whale Hunting in the Faroe Islands</h3> -->
+      <div style="font-size:1.5em;text-align:center;font-weight:bold;">Whale Hunting</div>
+      <div style="font-size:1.25em;text-align:center;font-weight:bold;margin-bottom:18px;">in the Faroe Islands</div>
+      <p>
+        <span id="yearInfo"></span>
+        <input type="range" min="1996" max="2014" value="1996" oninput="setYear(event.target.value)" style="vertical-align:middle;"/>
+        <span id="totalInfo"></span>
+      </p>
+      <hr>
+      <div style="text-align:center;">
+        <div id="bayInfo" style="font-size:1.1em;font-weight:bold;">Hover over a feature for more info.</div>
+        <div id="whalesInfo" style="max-width:270px;"></div>
+        <div id="huntsInfo" style="max-width:270px;"></div>
+        <div id="skinnInfo" style="max-width:270px;"></div>
+      </div>
+    </div>
+
+    <script src="//d3js.org/d3.v3.min.js"></script>
+    <script src="//js.arcgis.com/3.15/"></script>
+    <script>
+      var csvThematicLayer;
+      require([
+        'esri/map', 
+        'esri/layers/CSVLayer',
+        'esri/Color',
+        'esri/symbols/SimpleMarkerSymbol',
+        'esri/symbols/SimpleLineSymbol',
+        'esri/renderers/SimpleRenderer',
+        'dojo/domReady!'
+      ], function(
+        Map, CSVLayer, Color, SimpleMarkerSymbol, SimpleLineSymbol, SimpleRenderer
+      ) {
+        var map = new Map('map', {
+          basemap: 'hybrid',
+          center: [ -6.93, 61.91 ],
+          zoom: 9,
+          showInfoWindowOnClick: false,
+          showLabels: true
+        });
+
+        // create the layer for the location center points
+        var csvLocationsLayer = new CSVLayer('resources/FaroeWhaling.csv');
+        var whiteFill = new Color([255, 255, 255]);
+        var blackOutline = new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID, new Color([48, 48, 48]), 1);
+        var marker = new SimpleMarkerSymbol('solid', 10, blackOutline, whiteFill);
+        var renderer = new SimpleRenderer(marker);
+        csvLocationsLayer.setRenderer(renderer);
+        map.addLayer(csvLocationsLayer);
+        
+        // create the thematic layer of whale counts
+        csvThematicLayer = new CSVLayer('resources/FaroeWhaling.csv', {
+          copyright: 'www.hagstova.fo',
+          id: 'csvLayer',
+          fields: [{
+            name: 'year',
+            type: 'Number'
+          },{
+            name: 'whales',
+            type: 'Number'
+          },{
+            name: 'hunts',
+            type: 'Number'
+          },{
+            name: 'skinn_values',
+            type: 'Number'
+          }]
+        });
+
+        var purpleFill = new Color([178, 0, 255, 0.4]);
+        var orangeOutline = new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID, new Color([255, 124, 0]), 1);
+        var thematicMarker = new SimpleMarkerSymbol('solid', 15, orangeOutline, purpleFill);
+        var thematicRenderer = new SimpleRenderer(thematicMarker);
+        var quantize = d3.scale.quantize().domain([0, 100]).range(d3.range(121));
+        thematicRenderer.setSizeInfo({
+          field: 'whales',
+          // minSize: 0,
+          // maxSize: 100,
+          // minDataValue: 0,
+          // maxDataValue: 200,
+          stops: [{
+            value: 0,
+            size: quantize(0)
+          }, {
+            value: 1,
+            size: quantize(10) + 10
+          }, {
+            value: 25,
+            size: quantize(25)
+          }, {
+            value: 50,
+            size: quantize(50)
+          }, {
+            value: 75,
+            size: quantize(75)
+          }, {
+            value: 100,
+            size: quantize(100)
+          }]
+        });
+        csvThematicLayer.setRenderer(thematicRenderer);
+
+        map.addLayer(csvThematicLayer);
+
+        csvLocationsLayer.on('click,mouse-move', function(e) {
+          document.getElementById('bayInfo').innerHTML = e.graphic.attributes.whaling_bay ;
+        });
+        csvLocationsLayer.on('mouse-out', function(e) {
+          document.getElementById('bayInfo').innerHTML = 'Hover over a feature for more info.';
+        });
+
+        csvThematicLayer.on('click,mouse-move', function(e) {
+          document.getElementById('bayInfo').innerHTML = e.graphic.attributes.whaling_bay ;
+          document.getElementById('whalesInfo').innerHTML = e.graphic.attributes.whales + ' whales';
+          document.getElementById('huntsInfo').innerHTML = e.graphic.attributes.hunts + ' hunts ';
+          document.getElementById('skinnInfo').innerHTML = e.graphic.attributes.skinn_values + ' skinn';
+        });
+        csvThematicLayer.on('mouse-out', function(e) {
+          document.getElementById('bayInfo').innerHTML = 'Hover over a feature for more info.';
+          document.getElementById('whalesInfo').innerHTML = '';
+          document.getElementById('huntsInfo').innerHTML = '';
+          document.getElementById('skinnInfo').innerHTML = '';
+        });
+
+        map.on('layer-add', function(e) {
+          if (e.layer.id === 'csvLayer') {
+            setYear(1996);
+            document.getElementById('controls').style.display = 'block';
+          }
+        });
+      });
+
+      function setYear(year) {
+        document.getElementById('yearInfo').innerHTML = year;
+        
+        year = Number(year);
+        var sumWhales = 0;
+        csvThematicLayer.graphics.forEach(function(g) {
+          if (g.attributes.year === year) {
+            g.show();
+            sumWhales += g.attributes.whales;
+          } else {
+            g.hide();
+          }
+        });
+        
+        document.getElementById('totalInfo').innerHTML = sumWhales + ' whales';
+      }
+    </script>
+  </body>
+</html>
