@@ -34,7 +34,7 @@
         font-weight: bold;
       }
       .map-controls .subtitle {
-        margin-bottom: 18px;
+        margin-bottom: 8px;
         font-size: 1.25em;
         font-weight: bold;
       }
@@ -58,9 +58,6 @@
           top: 0;
           right: 0;
           font-size: 0.9em;
-        }
-        .map-controls .subtitle {
-          margin-bottom: 8px;
         }
       }
     </style>
@@ -182,12 +179,19 @@
 
         map.addLayer(csvThematicLayer);
 
+        var cleanupInfo = function() {
+          bayInfo.innerHTML = instructionalText;
+          whalesInfo.innerHTML = '';
+          huntsInfo.innerHTML = '';
+          skinnInfo.innerHTML = '';
+        };
+
         csvLocationsLayer.on('click,mouse-move', function(e) {
           var attributes = e.graphic.attributes;
           bayInfo.innerHTML = attributes.whaling_bay;
         });
-        csvLocationsLayer.on('mouse-out', function(e) {
-          bayInfo.innerHTML = instructionalText;
+        csvLocationsLayer.on('mouse-out', function() {
+          cleanupInfo();
         });
 
         csvThematicLayer.on('click,mouse-move', function(e) {
@@ -197,11 +201,8 @@
           huntsInfo.innerHTML = e.graphic.attributes.hunts + ' hunts ';
           skinnInfo.innerHTML = e.graphic.attributes.skinn_values + ' skinn';
         });
-        csvThematicLayer.on('mouse-out', function(e) {
-          bayInfo.innerHTML = instructionalText;
-          whalesInfo.innerHTML = '';
-          huntsInfo.innerHTML = '';
-          skinnInfo.innerHTML = '';
+        csvThematicLayer.on('mouse-out', function() {
+          cleanupInfo();
         });
 
         map.on('layer-add', function(e) {
@@ -214,7 +215,7 @@
         });
       });
 
-      function setYear(year) {
+      var setYear = function(year) {
         yearInfo.innerHTML = year;
         
         year = Number(year);
@@ -229,7 +230,7 @@
         });
         
         totalInfo.innerHTML = sumWhales + ' whales';
-      }
+      };
     </script>
   </body>
 </html>
