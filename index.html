@@ -1,109 +1,53 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <meta name="viewport" content="initial-scale=1, maximum-scale=1,user-scalable=no"/>
-    <title>Whale Hunting in the Faroe Islands</title>
-    <link rel="stylesheet" href="//js.arcgis.com/3.17/esri/themes/calcite/dijit/calcite.css">
-    <link rel="stylesheet" href="//js.arcgis.com/3.17/esri/themes/calcite/esri/esri.css">
 
-    <style>
-      html, body, #map {
-        height: 100%;
-        width: 100%;
-        margin: 0;
-        padding: 0;
-      }
-      body {
-        background-color: #FFF;
-        overflow: hidden;
-      }
-      .map-controls {
-        position: absolute;
-        top: 20px;
-        right: 20px;
-        border-radius: 2px;
-        padding: 5px;
-        width: 250px;
-        background-color: rgba(211,47,47,0.85);
-        color: black;
-        text-align: center;
-        display: none;
-      }
-      .map-controls .title {
-        font-size: 2.5em;
-        font-weight: bold;
-      }
-      .map-controls .subtitle {
-        margin-bottom: 8px;
-        font-size: 2em;
-        font-weight: bold;
-      }
-      .map-controls .slider-controls {
-        font-size: 1.5em;
-        font-weight: bold;
-      }
-      .map-controls .slider-controls .range-slider {
-        width: 90%;
-      }
-      .map-controls .feature-info {
-        font-size: 1.5em;
-        text-align: center;
-      }
-      .map-controls .feature-info .bay-info {
-        font-weight: bold;
-      }
-      @media screen and (max-width: 42em) {
-        .esriSimpleSlider {
-          display: none;
-        }
-        .map-controls {
-          width: 100%;
-          min-height: 195px;
-          bottom: 0;
-          top: auto;
-          right: auto;
-          line-height: 1.1;
-        }
-        .map-controls .title {
-          font-size: 1.75em;
-        }
-        .map-controls .subtitle {
-          font-size: 1.5em;
-        }
-        .map-controls .slider-controls,
-        .map-controls .feature-info {
-          font-size: 1.2em;
-        }
-        .map-controls .slider-controls .range-slider {
-            width: 85%;
-        }
-      }
-    </style>
-  </head>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="initial-scale=1, maximum-scale=1,user-scalable=no">
+  <title>Whale Hunting in the Faroe Islands</title>
+  <link rel="stylesheet" href="//js.arcgis.com/4.1/esri/css/view.css">
+  <link rel="stylesheet" href="//unpkg.com/c3@0.4.11/c3.min.css">
+  <link rel="stylesheet" href="main.css">
+</head>
 
-  <body class="calcite">
-    <div id="map"></div>
+<body class="red-theme">
+  <div id="viewDiv"></div>
 
-    <div id="mapControls" class="map-controls">
-      <div class="title">Whale Hunting</div>
-      <div class="subtitle">in the Faroe Islands</div>
-      <div class="slider-controls">
-        <div id="yearInfo"></div>
-        <input id="yearSlider" class="range-slider" type="range" min="1996" max="2015" value="1996" />
-        <div id="totalInfo"></div>
-      </div>
-      <hr>
-      <div class="feature-info">
-        <div id="bayInfo" class="bay-info">Interact with a site for more info.</div>
-        <div id="whalesInfo"></div>
-        <div id="huntsInfo"></div>
-        <div id="skinnInfo"></div>
-      </div>
+  <div id="mapControls" class="esri-widget map-controls">
+    <h1 class="title">Whale Hunting</h1>
+    <h2 class="subtitle">in the Faroe Islands</h2>
+    <div class="slider-controls">
+      <div id="yearInfo"></div>
+      <input id="yearSlider" class="range-slider" type="range" min="1996" max="2015" value="1996" />
+      <div id="totalInfo"></div>
     </div>
+    <div id="chart"></div>
+    <hr>
+    <div class="feature-info">
+      <div id="bayInfo" class="bay-info">Interact with a site for more info.</div>
+      <div id="whalesInfo"></div>
+      <div id="huntsInfo"></div>
+      <div id="skinnInfo"></div>
+    </div>
+  </div>
 
-    <script src="//d3js.org/d3.v3.min.js"></script>
-    <script src="//js.arcgis.com/3.17compact/"></script>
-    <script src="script.js"></script>
-  </body>
+  <script type="text/javascript">
+    var dojoConfig = {
+      async: true,
+      packages: [{
+        name: 'd3',
+        location: '//d3js.org',
+        main:'d3.v3.min'
+      }, {
+        name: 'c3',
+        location: '//unpkg.com/c3@0.4.11',
+        main: 'c3.min'
+      }]
+    };
+  </script>
+
+  <script src="//js.arcgis.com/4.1/"></script>
+  <script src="script.js"></script>
+</body>
+
 </html>

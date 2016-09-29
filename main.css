@@ -1,0 +1,107 @@
+html,
+body,
+#viewDiv {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.red-theme .esri-widget,
+.red-theme .esri-widget-button,
+.red-theme .esri-menu,
+.red-theme .esri-popup__main-container,
+.red-theme .esri-popup .esri-pointer-direction,
+.red-theme .esri-button {
+  background-color: rgba(211,47,47,0.75);
+  color: black;
+}
+
+.red-theme .esri-widget-button:focus,
+.red-theme .esri-widget-button:hover,
+.red-theme .esri-menu li:focus,
+.red-theme .esri-menu li:hover {
+  background-color: rgb(250,47,47);
+  color: black;
+}
+
+.red-theme .esri-widget-button:focus {
+  outline-color: black;
+}
+
+.red-theme .esri-button:focus,
+.red-theme .esri-button:hover {
+  color: black;
+}
+
+.red-theme .esri-zoom.esri-widget.esri-component {
+  background-color: transparent;
+}
+
+.map-controls {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  border-radius: 2px;
+  padding: 5px;
+  width: 250px;
+  /*background-color: rgba(211,47,47,0.75);*/
+  /*color: black;*/
+  text-align: center;
+  line-height: initial;
+  display: none;
+}
+.map-controls .title {
+  /*font-size: 2.5em;*/
+  /*font-weight: bold;*/
+}
+.map-controls .subtitle {
+  /*margin-bottom: 8px;*/
+  /*font-size: 2em;*/
+  /*font-weight: bold;*/
+}
+.map-controls .slider-controls {
+  font-size: 1.3em;
+  /*font-weight: bold;*/
+}
+.map-controls .slider-controls .range-slider {
+  width: 225px;
+}
+.map-controls .feature-info {
+  font-size: 1.3em;
+  /*text-align: center;*/
+}
+.map-controls .feature-info .bay-info {
+  font-weight: bold;
+}
+
+#chart .c3-line-whales {
+  stroke-width: 3px;
+}
+
+/*@media screen and (max-width: 42em) {
+  .esriSimpleSlider {
+    display: none;
+  }
+  .map-controls {
+    width: 100%;
+    min-height: 195px;
+    bottom: 0;
+    top: auto;
+    right: auto;
+    line-height: 1.1;
+  }
+  .map-controls .title {
+    font-size: 1.75em;
+  }
+  .map-controls .subtitle {
+    font-size: 1.5em;
+  }
+  .map-controls .slider-controls,
+  .map-controls .feature-info {
+    font-size: 1.2em;
+  }
+  .map-controls .slider-controls .range-slider {
+      width: 85%;
+  }
+}*/
