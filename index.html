@@ -3,7 +3,7 @@
 
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <meta name="viewport" content="initial-scale=1, maximum-scale=1,user-scalable=no">
+  <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
   <title>Whale Hunting in the Faroe Islands</title>
   <link rel="stylesheet" href="//js.arcgis.com/4.1/esri/css/view.css">
   <link rel="stylesheet" href="//unpkg.com/c3@0.4.11/c3.min.css">
@@ -14,24 +14,17 @@
   <div id="viewDiv"></div>
 
   <div id="mapControls" class="esri-widget map-controls">
-    <h1 class="title">Whale Hunting</h1>
-    <h2 class="subtitle">in the Faroe Islands</h2>
+    <h1>Whale Hunting</h1>
+    <h2>in the <a href="https://en.wikipedia.org/wiki/Faroe_Islands" target="_blank">Faroe Islands</a></h2>
     <div class="slider-controls">
       <div id="yearInfo"></div>
       <input id="yearSlider" class="range-slider" type="range" min="1996" max="2015" value="1996" />
       <div id="totalInfo"></div>
     </div>
     <div id="chart"></div>
-    <hr>
-    <div class="feature-info">
-      <div id="bayInfo" class="bay-info">Interact with a site for more info.</div>
-      <div id="whalesInfo"></div>
-      <div id="huntsInfo"></div>
-      <div id="skinnInfo"></div>
-    </div>
   </div>
 
-  <script type="text/javascript">
+  <script>
     var dojoConfig = {
       async: true,
       packages: [{
@@ -45,7 +38,6 @@
       }]
     };
   </script>
-
   <script src="//js.arcgis.com/4.1/"></script>
   <script src="script.js"></script>
 </body>
