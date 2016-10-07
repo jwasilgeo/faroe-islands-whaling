@@ -7,6 +7,17 @@ body,
   padding: 0;
 }
 
+.esri-display-object > svg > g:nth-child(3) {
+  transition: opacity .2s ease-in;
+  opacity: 0;
+}
+.g-hidden {
+  opacity: 0;
+}
+.g-visible {
+  opacity: 1 !important;
+}
+
 /* custom theme */
 .red-theme .esri-widget,
 .red-theme .esri-widget-button,
@@ -37,7 +48,7 @@ body,
   outline-color: black;
 }
 .red-theme .esri-widget a {
-  color: whitesmoke;
+  color: #e4e4e4;;
   text-decoration: underline;
 }
 .red-theme .esri-popup-renderer,
@@ -46,6 +57,17 @@ body,
 }
 .red-theme .esri-popup__content {
   overflow-y: hidden;
+}
+
+.credits {
+  display: none;
+  padding: 5px;
+  line-height: 1.5em;
+  z-index: 2; /* higher than esri-popup */
+}
+.credits a {
+  margin: 0 7px;
+  font-weight: bold;
 }
 
 .map-controls {

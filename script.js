@@ -21,11 +21,13 @@ require([
     yearSliderNode = document.getElementById('yearSlider'),
     yearInfoNode = document.getElementById('yearInfo'),
     totalInfoNode = document.getElementById('totalInfo'),
+    credits = document.getElementById('credits'),
     csvLayerView,
     csvLayerViewGraphics,
     summaryChartData = {},
     summaryChart,
-    harborChart;
+    harborChart,
+    previousEaseInTimeoutID;
 
   yearSliderNode.addEventListener('input', function(e) {
     setYear(e.target.value);
@@ -58,6 +60,10 @@ require([
       }
     }
   });
+
+  // position and show the credits element
+  mapView.ui.add('credits', 'bottom-right');
+  credits.style.display = 'block';
 
   // create the thematic layer of whale counts
   var quantize = d3.scale.quantize().domain([0, 100]).range(d3.range(121));
@@ -299,7 +305,10 @@ require([
         summaryChart.element.id = "summaryChart";
 
         // finally, set the initial year value for the app
-        setYear(1996);
+        // but use a timeout because the svg parent g element of the circles won't be available in the DOM yet
+        setTimeout(function() {
+          setYear(1996);
+        }, 250);
       });
     }
   });
@@ -312,6 +321,9 @@ require([
     yearInfoNode.innerHTML = year;
     totalInfoNode.innerHTML = summaryChartData[year].whaleTotal + ' whales';
 
+    var circlesParentElement = document.querySelectorAll('.esri-display-object>svg>g>circle')[0].parentElement;
+    circlesParentElement.setAttribute('class', 'g-hidden');
+
     // toggle each csv graphic's visibility
     year = Number(year);
     csvLayerViewGraphics.forEach(function(g) {
@@ -322,13 +334,24 @@ require([
       }
     });
 
-    // workaround to "refresh" the csv layer view after changing graphic visibility properties
-    csvLayerView.visible = false;
+    // wait for the custom css transition to finish fading OUT the previously-selected year's graphics
     setTimeout(function() {
-      csvLayerView.visible = true;
-    }, 5);
+      // this timeout is a workaround to "refresh" the csv layer view after changing graphic visibility properties
+      // toggling the visible boolean property without a timeout does not appear to do anything until panning/zooming
+      csvLayerView.visible = false;
+      setTimeout(function() {
+        csvLayerView.visible = true;
+        // this final timeout is to start (and/or canceling) the custom css transition to fading IN the currently-selected year's graphics
+        if (previousEaseInTimeoutID) {
+          clearTimeout(previousEaseInTimeoutID);
+        }
+        previousEaseInTimeoutID = setTimeout(function() {
+          circlesParentElement.setAttribute('class', 'g-visible');
+        }, 50);
+      }, 5);
+    }, 200);
 
-    // select a point on the chart to display the chosen year
+    // select a point on the summary chart to display the chosen year
     summaryChart.select(['whales'], [Object.keys(summaryChartData).indexOf(String(year))], true);
 
     // set popup properties and render content (a local harbor chart) when the year is changed
